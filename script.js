@@ -1,15 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
   const imageGrid = document.getElementById("imageGrid");
 
-  // 模拟从assets文件夹中获取图片的URL
   const imageUrls = [
-    "assets/image1.jpg",
-    "assets/image2.jpg",
-    "assets/image3.jpg",
-    // 添加更多图片URL
+    "https://raw.githubusercontent.com/easylive1989/images/master/static/images/2022IThome/1%20-%20p1Lmub9.png",
+    "https://raw.githubusercontent.com/easylive1989/images/master/static/images/2022IThome/102%20-%20HAV1pB2.png",
+    "https://raw.githubusercontent.com/easylive1989/images/master/static/images/2022IThome/11%20-%20Gqu4Jkj.png",
   ];
 
-  // 将图片显示在网格中
   imageUrls.forEach(function(url) {
     const img = document.createElement("img");
     img.src = url;
