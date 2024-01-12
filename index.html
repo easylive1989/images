@@ -1,40 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Repository Files</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub 文件列表</title>
 </head>
 <body>
-    <h1>GitHub Repository Files</h1>
-    <ul id="fileList">
-        <!-- File names will be displayed here -->
-    </ul>
+  <h1>GitHub 文件列表</h1>
+  <ul id="fileList"></ul>
 
-    <script>
-        // 使用GitHub API获取指定仓库的文件和文件夹列表
-        const repoOwner = 'easylive1989'; // 替换为你的GitHub用户名
-        const repoName = 'images'; // 替换为你的仓库名称
-        const apiUrl = `https://github.com/easylive1989/images/tree/master/static`;
+  <script>
+    // 使用 fetch 方法从 GitHub API 获取文件列表
+    fetch('https://api.github.com/repos/easylive1989/images/contents/static')
+      .then(response => response.json())
+      .then(data => {
+        // 过滤出 PNG 和 JPG 文件
+        const filteredFiles = data.filter(file => {
+          return file.type === 'file' && (file.name.endsWith('.png') || file.name.endsWith('.jpg'));
+        });
 
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                // 使用JavaScript处理API返回的数据，筛选出PNG和JPG文件
-                const pngJpgFiles = data.filter(file => {
-                    return file.type === 'file' && (file.name.endsWith('.png') || file.name.endsWith('.jpg'));
-                });
-
-                // 使用HTML在网页上显示这些文件名
-                const fileList = document.getElementById('fileList');
-                pngJpgFiles.forEach(file => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = file.name;
-                    fileList.appendChild(listItem);
-                });
-            })
-            .catch(error => console.error('Error fetching GitHub repository files', error));
-    </script>
+        // 在网页中显示过滤后的文件名
+        const fileList = document.getElementById('fileList');
+        filteredFiles.forEach(file => {
+          const listItem = document.createElement('li');
+          listItem.textContent = file.name;
+          fileList.appendChild(listItem);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching file list:', error);
+      });
+  </script>
 </body>
 </html>
 <!--
