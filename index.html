@@ -3,11 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Personal Images</title>
+  <title>GitHub Images</title>
 </head>
 <body>
-  <ul id="fileList"></ul>
-  <script src="script.js"></script>
+  <h1>GitHub Images</h1>
+  <ul id="imageList"></ul>
+
+  <script>
+    // 使用GitHub API获取存储库中的文件列表
+    fetch('https://api.github.com/repos/easylive1989/images/contents/static')
+      .then(response => response.json())
+      .then(data => {
+        // 过滤出PNG和JPG文件
+        const imageFiles = data.filter(file => {
+          return file.name.endsWith('.png') || file.name.endsWith('.jpg');
+        });
+
+        // 将过滤后的文件列表显示在页面上
+        const imageList = document.getElementById('imageList');
+        imageFiles.forEach(file => {
+          const listItem = document.createElement('li');
+          listItem.textContent = file.name;
+          imageList.appendChild(listItem);
+        });
+
+        // 递归遍历子文件夹，获取所有PNG和JPG文件
+        data.forEach(item => {
+          if (item.type === 'dir') {
+            fetch(item.url)
+              .then(response => response.json())
+              .then(subData => {
+                subData.forEach(subItem => {
+                  if (subItem.type === 'file' && (subItem.name.endsWith('.png') || subItem.name.endsWith('.jpg'))) {
+                    const subListItem = document.createElement('li');
+                    subListItem.textContent = subItem.name;
+                    imageList.appendChild(subListItem);
+                  }
+                });
+              });
+          }
+        });
+      });
+  </script>
 </body>
 </html>
 <!--
