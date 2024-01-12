@@ -3,34 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitHub 文件列表</title>
+  <title>My Personal Images</title>
 </head>
 <body>
-  <h1>GitHub 文件列表</h1>
   <ul id="fileList"></ul>
-
-  <script>
-    // 使用 fetch 方法从 GitHub API 获取文件列表
-    fetch('https://api.github.com/repos/easylive1989/images/contents/static/images/2022IThome')
-      .then(response => response.json())
-      .then(data => {
-        // 过滤出 PNG 和 JPG 文件
-        const filteredFiles = data.filter(file => {
-          return file.type === 'file' && (file.name.endsWith('.png') || file.name.endsWith('.jpg'));
-        });
-
-        // 在网页中显示过滤后的文件名
-        const fileList = document.getElementById('fileList');
-        filteredFiles.forEach(file => {
-          const listItem = document.createElement('li');
-          listItem.textContent = file.name;
-          fileList.appendChild(listItem);
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching file list:', error);
-      });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
 <!--

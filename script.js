@@ -1,44 +1,20 @@
-const nodegit = require('nodegit');
-const path = require('path');
-const promisify = require('util').promisify;
-const fs = require('fs');
-
-const readdir = promisify(fs.readdir);
-const stat = promisify(fs.stat);
-
-async function listImageFiles(repoPath) {
-  const repo = await nodegit.Repository.open(repoPath);
-  const tree = await repo.getMasterCommit().getTree();
-
-  async function listFilesRecursively(tree) {
-    const fileNames = [];
-
-    for (let i = 0; i < tree.entryCount(); i++) {
-      const entry = tree.entryByIndex(i);
-      const file = entry.file();
-
-      if (file.isTree()) {
-        const subtree = await tree.getEntry(entry.name());
-        const subTree = await repo.getTree(subtree.oid());
-        const subFileNames = await listFilesRecursively(subTree);
-        fileNames.push(...subFileNames);
-      } else {
-        const fileName = entry.name();
-        const ext = path.extname(fileName).toLowerCase();
-        if (ext === '.png' || ext === '.jpg') {
-          fileNames.push(fileName);
-        }
-      }
-    }
-
-    return fileNames;
-  }
-
-  const files = await listFilesRecursively(tree);
-  console.log(files);
-}
-
-listImageFiles('https://github.com/easylive1989/images');
+fetch('https://api.github.com/repos/easylive1989/images/contents/static/images/2022IThome')
+.then(response => response.json())
+.then(data => {
+  const filteredFiles = data.filter(file => {
+    return file.type === 'file' && (file.name.endsWith('.png') || file.name.endsWith('.jpg'));
+  
+  // 在网页中显示过滤后的文件名
+  const fileList = document.getElementById('fileList');
+  filteredFiles.forEach(file => {
+    const listItem = document.createElement('li');
+    listItem.textContent = file.name;
+    fileList.appendChild(listItem);
+  });
+})
+.catch(error => {
+  console.error('Error fetching file list:', error);
+});
 
 document.addEventListener("DOMContentLoaded", function() {
   const imageGrid = document.getElementById("imageGrid");
